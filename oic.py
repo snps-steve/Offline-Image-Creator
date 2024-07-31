@@ -12,7 +12,7 @@ import math
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'black_duck_versions.yaml')
 
 # Required command-line tools
-REQUIRED_TOOLS = ["curl", "docker", "tar"]
+REQUIRED_TOOLS = ["curl", "docker", "tar", "7z"]
 
 # Log output dictionary to store logs
 output = {
@@ -77,10 +77,21 @@ def check_required_tools():
     Check if the required command-line tools are available in the system's PATH.
     """
     missing_tools = []
+    available_tools = []
     for tool in REQUIRED_TOOLS:
         try:
-            subprocess.run([tool, "--version"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            log_info(f"{tool} is installed.")
+            if tool == "7z":
+                # Check for 7z by running it without arguments
+                result = subprocess.run([tool], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                if "7-Zip" in result.stdout.decode() or "7-Zip" in result.stderr.decode():
+                    log_info(f"{tool} is installed.")
+                    available_tools.append(tool)
+                else:
+                    missing_tools.append(tool)
+            else:
+                subprocess.run([tool, "--version"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                log_info(f"{tool} is installed.")
+                available_tools.append(tool)
         except subprocess.CalledProcessError:
             missing_tools.append(tool)
         except FileNotFoundError:
@@ -92,6 +103,30 @@ def check_required_tools():
         sys.exit(1)
     else:
         log_info("All required command-line tools are installed.")
+    return available_tools
+
+def prompt_archive_tool(available_tools):
+    """
+    Prompt the user to select an archive tool if both 'tar' and '7z' are available.
+    """
+    if "tar" in available_tools and "7z" in available_tools:
+        while True:
+            choice = input("Both 'tar' and '7z' are available. Which one would you like to use for creating the archive? (tar/7z): ").strip().lower()
+            if choice in ["tar", "7z"]:
+                log_info(f"User selected '{choice}' for creating the archive.")
+                return choice
+            else:
+                print("Invalid choice. Please enter 'tar' or '7z'.")
+    elif "tar" in available_tools:
+        log_info("Only 'tar' is available for creating the archive.")
+        return "tar"
+    elif "7z" in available_tools:
+        log_info("Only '7z' is available for creating the archive.")
+        return "7z"
+    else:
+        log_error("Neither 'tar' nor '7z' is available. Please install at least one of them and try again.")
+        print("Neither 'tar' nor '7z' is available. Please install at least one of them and try again.")
+        sys.exit(1)
 
 # Function to validate and normalize user input
 def normalize_version_input(user_input):
@@ -230,17 +265,22 @@ def save_images_to_tar(images):
         log_error(f"Unexpected error while saving images to tar: {e}")
 
 # Function to create a tarball of all tar files
-def create_tarball():
-    log_info("Creating a tarball of all saved images.")
+def create_tarball(archive_tool):
+    log_info(f"Creating a tarball of all saved images using {archive_tool}.")
     try:
-        with tarfile.open('images.tar.gz', 'w:gz') as tar:
-            for tar_file in os.listdir('.'):
-                if tar_file.endswith('.tar'):
-                    log_info(f"Adding {tar_file} to images.tar.gz")
-                    tar.add(tar_file)
+        if archive_tool == 'tar':
+            with tarfile.open('images.tar.gz', 'w:gz') as tar:
+                for tar_file in os.listdir('.'):
+                    if tar_file.endswith('.tar'):
+                        log_info(f"Adding {tar_file} to images.tar.gz")
+                        tar.add(tar_file)
             log_info("Successfully created images.tar.gz")
+        elif archive_tool == '7z':
+            cmd = ["7z", "a", "images.7z"] + [f for f in os.listdir('.') if f.endswith('.tar')]
+            subprocess.run(cmd, check=True)
+            log_info("Successfully created images.7z")
     except Exception as e:
-        log_error(f"Error creating tarball: {e}")
+        log_error(f"Error creating archive with {archive_tool}: {e}")
 
 # Main script
 def main():
@@ -255,9 +295,11 @@ def main():
 
     print("\nStep 2: Checking for required command-line tools.")
     log_info("Step 2: Checking for required command-line tools.")
-    check_required_tools()
+    available_tools = check_required_tools()
     print("All required command-line tools are installed.")
     log_info("All required command-line tools are installed.")
+
+    archive_tool = prompt_archive_tool(available_tools)
 
     print("\nStep 3: Checking for the existence of the configuration file.")
     log_info("Step 3: Checking for the existence of the configuration file.")
@@ -333,23 +375,27 @@ def main():
         log_info("Step 11: Saving images to tar files.")
         save_images_to_tar(github_images + manual_images)
 
-        print("\nStep 12: Creating tarball. Hang tight - this will take a while...")
-        log_info("Step 12: Creating tarball.")
-        create_tarball()
+        print(f"\nStep 12: Creating {archive_tool} archive.")
+        log_info(f"Step 12: Creating {archive_tool} archive.")
+        create_tarball(archive_tool)
 
-        print("\nStep 13: Providing user notes.\n")
-        log_info("Step 13: Providing user notes\n.")
-        log_info("Note: Move either the tarball of all of the images (images.tar.gz) or each image") 
-        log_info("archive to the Black Duck target server using your preferred method.")
-        log_info("Once on the target server, untar the tarball using: 'tar xvf images.tar.gz'")
+        print("\nStep 13: Providing user notes.")
+        log_info("Step 13: Providing user notes.")
+        if archive_tool == 'tar':
+            log_info("Note: Move the tarball (images.tar.gz) to the target server using a jump box.")
+            log_info("Once on the target server, untar the tarball using: 'tar xvf images.tar.gz'")
+            print("Note: Move the tarball (images.tar.gz) to the target server using a jump box.")
+            print("Once on the target server, untar the tarball using: 'tar xvf images.tar.gz'")
+        elif archive_tool == '7z':
+            log_info("Note: Move the archive (images.7z) to the target server using a jump box.")
+            log_info("Once on the target server, extract the archive using: '7z x images.7z'")
+            print("Note: Move the archive (images.7z) to the target server using a jump box.")
+            print("Once on the target server, extract the archive using: '7z x images.7z'")
+        
         log_info("You do not need to untar the individual images as Docker can load them as .tar archives.")
         log_info("Load the images with the command: for i in $(ls *.tar); do docker load -i $i; done")
-        log_info("Process complete. If there were no errors, the images should be ready for")
-        log_info("")
+        log_info("Process complete. If there were no errors, the images should be ready for use.")
 
-        print("Note: Move either the tarball of all of the images (images.tar.gz) or each image")
-        print("archive to the Black Duck target server using your preferred method.")
-        print("Once on the target server, untar the tarball using: 'tar xvf images.tar.gz'")
         print("You do not need to untar the individual images as Docker can load them as .tar archives.")
         print("Load the images with the command: for i in $(ls *.tar); do docker load -i $i; done")
         print("Process complete. If there were no errors, the images should be ready for use.")
