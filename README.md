@@ -1,4 +1,4 @@
-This utility:<br>
+This utility supports air gapped deployments of Black Duck:<br>
 <br>
 Step 1: Checks for required Python packages.<br>
 Step 2: Checks for required command-line tools.<br>
