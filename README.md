@@ -2,13 +2,13 @@
 # Black Duck Image Management Script
 
 ## Overview
-This script automates the process of pulling, saving, and archiving Docker images for various versions of Black Duck. It supports pulling both standard and UBI (hardened) images, as well as optional BDBA and Reversing Labs containers.
+This script automates the process of pulling, saving, and archiving Docker images for various versions of Black Duck. It supports pulling both standard and UBI (hardened) images, as well as optional BDBA and Reversing Labs containers. It also checks for commands it Python libraries that it needs. The script can help install Python packages if necessary but not command-line tools.  
 
 ## Prerequisites
 - Python 3.x
 - Docker installed and running
-- Required Python packages: `pyyaml`
-- Required command-line tools: `curl`, `tar`, `7z` (checks to see if you're running Windows, Mac, or *Nix)
+- Required Python packages: none extra beyond the default install of Python
+- Required command-line tools: `docker`, `curl`, `tar`, `7z` 
 
 ## Setup
 
@@ -17,11 +17,11 @@ This script automates the process of pulling, saving, and archiving Docker image
    git clone https://github.com/snps-steve/Offline-Image-Creator.git
    cd Offline-Image-Creator
    ```
+   
+2. It will check for docker (and that docker is running), curl, tar, and 7z but it won't help you install them if they're missing.
 
-2. You don't need to add Python packages yourself. The script does a check depending on if you're on a Windows, Linux, or Mac.
-
-It will check and help install the required Python packages ('YAML' aka 'pyyaml').
-
+3. The script downloads the version of Black Duck Hub and enumerates all container image names and versions depending on the version of Hub selected during the tool execution and what "extra" containers you might need. Some customers need and run BDBA Integrated and Reversing Labs.  
+    
 ## Usage
 
 Run the script:
