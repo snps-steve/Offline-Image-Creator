@@ -14,8 +14,8 @@ This script automates the process of pulling, saving, and archiving Docker image
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-username/your-repo.git
-   cd your-repo
+   git clone https://github.com/snps-steve/Offline-Image-Creator.git
+   cd Offline-Image-Creator
    ```
 
 2. Ensure you have the required Python packages installed:
