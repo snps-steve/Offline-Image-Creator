@@ -18,16 +18,15 @@ This script automates the process of pulling, saving, and archiving Docker image
    cd Offline-Image-Creator
    ```
 
-2. Ensure you have the required Python packages installed:
-   ```sh
-   pip install pyyaml
-   ```
+2. You don't need to add Python packages yourself. The script does a check depending on if you're on a Windows, Linux, or Mac.
+
+It will check and help install the required Python packages ('YAML' aka 'pyyaml').
 
 ## Usage
 
 Run the script:
 ```sh
-python script.py
+python oic.py
 ```
 
 The script will guide you through the following steps:
@@ -70,7 +69,7 @@ The script will guide you through the following steps:
 ## Example Usage
 
 ```sh
-python script.py
+python oic.py
 ```
 
 1. **Checking for required Python packages**.
