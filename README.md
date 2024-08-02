@@ -1,23 +1,103 @@
-This utility supports air gapped deployments of Black Duck:<br>
-<br>
-Step 1: Checks for required Python packages.<br>
-Step 2: Checks for required command-line tools.<br>
-Step 3: Checking for the existence of the configuration file containing the Black Duck version and Container image names.<br>
-Step 4: Loads the YAML file. <br>
-Step 5: Request that the user enter the version of Black Duck for which they want the script to download the associated images.<br>
-Step 6: Displays the image names and versions for the selected Black Duck version.<br>
-Step 7: Pulls the images from GitHub.<br>
-Step 8: Pulls images not on GitHub manually.<br> 
-Step 9: Pulls all images with tags and saves list to 'images' file.<br>
-Step 10: Saves images to individual tar files using tags.<br>
-Step 11: Saving each image to tar files.<br>
-Step 12: Creates a tarball archive (can take a while).<br>
-<br>
-Provides instructions to the user to complete the rest of the process, namely:<br>
-<br>
-Note: Move either the tarball of all of the images (images.tar.gz) or each image <br>
-archive to the Black Duck target server using your preferred method.<br>
-Once on the target server, untar the tarball using: 'tar xvf images.tar.gz'<br>
-You do not need to untar the individual images as Docker can load them as .tar archives.<br>
-Load the images with the command: for i in $(ls *.tar); do docker load -i $i; done<br>
-Process complete. If there were no errors, the images should be ready for"<br>
+
+# Black Duck Image Management Script
+
+## Overview
+This script automates the process of pulling, saving, and archiving Docker images for various versions of Black Duck. It supports pulling both standard and UBI (hardened) images, as well as optional BDBA and Reversing Labs containers.
+
+## Prerequisites
+- Python 3.x
+- Docker installed and running
+- Required Python packages: `pyyaml`
+- Required command-line tools: `curl`, `tar`, `7z`
+
+## Setup
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-username/your-repo.git
+   cd your-repo
+   ```
+
+2. Ensure you have the required Python packages installed:
+   ```sh
+   pip install pyyaml
+   ```
+
+## Usage
+
+Run the script:
+```sh
+python script.py
+```
+
+The script will guide you through the following steps:
+
+1. **Checking for required packages and tools**: The script checks for necessary Python packages and command-line tools.
+
+2. **Cleaning up**: The script deletes any existing `hub` directory and `images` file to ensure a clean environment.
+
+3. **Selecting Black Duck version**: You will be prompted to select a Black Duck version from a list of supported versions. The default version is `2024.7.0`.
+
+4. **Obtaining image names and versions**: The script clones the specified version of the Black Duck repository to obtain the necessary image names and versions.
+
+5. **Asking about 'extra' images required**:
+    - Whether you need BDBA containers (default: no).
+    - Whether you need Reversing Labs containers (default: no).
+    - Whether you need UBI (hardened) images (default: no).
+
+6. **Authentication to Iron Bank registry**: If UBI images are required, you will be prompted to enter your Iron Bank username and CLI secret to authenticate.
+
+7. **Pulling images**: The script pulls the required images from Docker Hub or Iron Bank registry based on your selections.
+
+8. **Saving images to tar files**: The pulled images are saved as tar files.
+
+9. **Creating archive**: The tar files are archived using `tar`.
+
+10. **Providing user notes**: Instructions are provided for transferring and loading the images on the target server.
+
+## Important Notes
+
+- **Moving the tarball**: Move the tarball (`images.tar.gz`) to the target server using a jump box.
+- **Untarring the tarball**: On the target server, untar the tarball using:
+  ```sh
+  tar xvf images.tar.gz
+  ```
+- **Loading images**: You do not need to untar the individual images as Docker can load them as tar archives. Load the images with the command:
+  ```sh
+  for i in $(ls *.tar); do docker load -i $i; done
+  ```
+
+## Example Usage
+
+```sh
+python script.py
+```
+
+1. **Checking for required Python packages**.
+2. **Checking for required command-line tools**.
+3. **Obtaining image names and versions based on your selection of Black Duck v2024.7.0**.
+4. **Asking about 'extra' images required**:
+    - Do you need the BDBA container? (yes/no) (default is no):
+    - Do you need the Reversing Labs container? (yes/no) (default is no):
+    - Do you need UBI images? (yes/no) (default is no):
+    - Enter your Iron Bank username:
+    - Enter your Iron Bank CLI secret:
+5. **Creating images archive**.
+6. **Providing user notes**:
+    - Note: Move the tarball (`images.tar.gz`) to the target server using a jump box.
+    - Once on the target server, untar the tarball using:
+      ```sh
+      tar xvf images.tar.gz
+      ```
+    - You do not need to untar the individual images as Docker can load them as tar archives. Load the images with the command:
+      ```sh
+      for i in $(ls *.tar); do docker load -i $i; done
+      ```
+
+## Contributing
+
+Feel free to open issues or submit pull requests for any improvements.
+
+## License
+
+This project is licensed under the MIT License.
