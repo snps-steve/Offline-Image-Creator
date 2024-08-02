@@ -8,7 +8,7 @@ This script automates the process of pulling, saving, and archiving Docker image
 - Python 3.x
 - Docker installed and running
 - Required Python packages: `pyyaml`
-- Required command-line tools: `curl`, `tar`, `7z`
+- Required command-line tools: `curl`, `tar`, `7z` (checks to see if you're running Windows, Mac, or *Nix)
 
 ## Setup
 
