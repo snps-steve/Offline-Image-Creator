@@ -52,7 +52,7 @@ The script will guide you through the following steps:
 
 6. **Authentication to Iron Bank registry**: If UBI images are required, you will be prompted to enter your Iron Bank username and CLI secret to authenticate.
 
-7. **Pulling images**: The script pulls the required images from Docker Hub or Iron Bank registry based on your selections.
+7. **Pulling images**: The script pulls the required images from Docker Hub or Iron Bank registry based on your selections. Again - for some reason not understood by me, two UBI images are pulled without issue but everything else ends with errors. 
 
 8. **Saving images to tar files**: The pulled images are saved as tar files.
 
