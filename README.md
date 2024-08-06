@@ -13,18 +13,24 @@ This script automates the process of pulling, saving, and archiving Docker image
 ## Setup
 
 1. Clone the repository:
+
    ```sh
    git clone https://github.com/snps-steve/Offline-Image-Creator.git
+   ```
+
+3. Change into the directory with the cloned code.
+    
+   ```sh
    cd Offline-Image-Creator
    ```
    
-2. It will check for docker (and that docker is running), curl, tar, and 7z but it won't help you install them if they're missing.
+4. The script will check for Docker (and that docker is running), Curl, tar, and 7z but it won't help you install them if they're missing.
 
-3. The script downloads the version of Black Duck Hub and enumerates all container image names and versions depending on the version of Hub selected during the tool execution and what "extra" containers you might need. Some customers need and run BDBA Integrated and Reversing Labs.  
+5. The script downloads the version of Black Duck Hub specified, enumerates the container image names and version numbers, and any "extra" containers you might need. Some customers are licensed for and need to run BDBA Integrated and Reversing Labs.  
     
 ## Usage
 
-Run the script:
+Run the script and it will prompt you at each stage of the process:
 ```sh
 python oic.py
 ```
@@ -42,7 +48,7 @@ The script will guide you through the following steps:
 5. **Asking about 'extra' images required**:
     - Whether you need BDBA containers (default: no).
     - Whether you need Reversing Labs containers (default: no).
-    - Whether you need UBI (hardened) images (default: no).
+    - Whether you need UBI (hardened) images (default: no).  Please note: currently the script can't download the hardened Iron Bank images. I'm working on trying to fix that.
 
 6. **Authentication to Iron Bank registry**: If UBI images are required, you will be prompted to enter your Iron Bank username and CLI secret to authenticate.
 
