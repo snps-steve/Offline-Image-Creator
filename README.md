@@ -24,9 +24,9 @@ This script automates the process of pulling, saving, and archiving Docker image
    cd Offline-Image-Creator
    ```
    
-4. The script will check for Docker (and that docker is running), Curl, tar, and 7z but it won't help you install them if they're missing.
+4. The script will check for Docker (and that docker is running), Curl, tar, and 7z but it won't help you install them if they're missing. So, if you don't currently have these dependencies installed, you'll need to go do that before executing the script. 
 
-5. The script downloads the version of Black Duck Hub specified, enumerates the container image names and version numbers, and any "extra" containers you might need. Some customers are licensed for and need to run BDBA Integrated and Reversing Labs.  
+5. The script downloads the specified version of Black Duck Hub and enumerates the container image names and version numbers. It will prompt you and ask if you need any "extra" containers you might need. Some customers are licensed for and need to run BDBA Integrated and Reversing Labs. We also have Federal customers that need hardened Iron Bank images.  
     
 ## Usage
 
