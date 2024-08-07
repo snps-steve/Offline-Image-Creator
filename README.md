@@ -24,7 +24,9 @@ This script automates the process of pulling, saving, and archiving Docker image
    cd Offline-Image-Creator
    ```
    
-4. The script will check for Docker (and that docker is running), Curl, tar, and 7z but it won't help you install them if they're missing. So, if you don't currently have these dependencies installed, you'll need to go do that before executing the script. 
+4. The script will check for Docker (and that docker is running), Curl, tar, and 7z and Python packages beyond the defaults. It won't help you install docker, Curl, tar, or 7z but if you're on a system that uses pip, it can help you install the missing Python packages. 
+
+If you don't currently have the non-Python related  dependencies installed, you'll need to go do that before executing the script. 
 
 5. The script downloads the specified version of Black Duck Hub and enumerates the container image names and version numbers. It will prompt you and ask if you need any "extra" containers you might need. Some customers are licensed for and need to run BDBA Integrated and Reversing Labs. We also have Federal customers that need hardened Iron Bank images.  
     
@@ -50,9 +52,9 @@ The script will guide you through the following steps:
     - Whether you need Reversing Labs containers (default: no).
     - Whether you need UBI (hardened) images (default: no).  Please note: currently the script can't download the hardened Iron Bank images. I'm working on trying to fix that.
 
-6. **Authentication to Iron Bank registry**: If UBI images are required, you will be prompted to enter your Iron Bank username and CLI secret to authenticate.
+6. **Authentication to Iron Bank registry**: If Iron Bank hardened UBI images are required, you will be prompted to enter your Iron Bank username and CLI secret to authenticate (you won't be able to see the CLI secret). The script then creates a 'docker-config.json' file that contains the username, CLI secret, and the base64 encoded username:cli secret. The script pulls the information it needs from here to successfully authenticate to the Iron Bank repository.  
 
-7. **Pulling images**: The script pulls the required images from Docker Hub or Iron Bank registry based on your selections. Again - for some reason not understood by me, two UBI images are pulled without issue but everything else ends with errors. 
+7. **Pulling images**: The script pulls the required images from Docker Hub or Iron Bank registry based on your selections. 
 
 8. **Saving images to tar files**: The pulled images are saved as tar files.
 
