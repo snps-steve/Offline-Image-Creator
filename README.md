@@ -2,7 +2,7 @@
 # Black Duck Image Management Script
 
 ## Overview
-This script automates the process of pulling, saving, and archiving Docker images for various versions of Black Duck. It supports pulling both standard and UBI (hardened) images, as well as optional BDBA and Reversing Labs containers. It also checks for commands it Python libraries that it needs. The script can help install Python packages if necessary but not command-line tools.  
+This script automates the process of pulling, saving, and archiving Docker images for various versions of Black Duck. It supports pulling both standard and UBI (hardened) images, as well as optional Black Duck Binary Analysis (DBA) and Reversing Labs containers. It also checks for commands and Python libraries that it needs. The script can help install Python packages if necessary but not command-line tools.  
 
 ## Prerequisites
 - Python 3.x
@@ -26,7 +26,7 @@ This script automates the process of pulling, saving, and archiving Docker image
    
 4. The script will check for Docker (and that docker is running), Curl, tar, and 7z and Python packages beyond the defaults. It won't help you install docker, Curl, tar, or 7z but if you're on a system that uses pip, it can help you install the missing Python packages. 
 
-If you don't currently have the non-Python related  dependencies installed, you'll need to go do that before executing the script. 
+If you don't currently have the non-Python-related dependencies installed, you'll need to go do that before executing the script. 
 
 5. The script downloads the specified version of Black Duck Hub and enumerates the container image names and version numbers. It will prompt you and ask if you need any "extra" containers you might need. Some customers are licensed for and need to run BDBA Integrated and Reversing Labs. We also have Federal customers that need hardened Iron Bank images.  
     
@@ -41,16 +41,16 @@ The script will guide you through the following steps:
 
 1. **Checking for required packages and tools**: The script checks for necessary Python packages and command-line tools.
 
-2. **Cleaning up**: The script deletes any existing `hub` directory and `images` file to ensure a clean environment.
+2. **Cleaning up**: The script deletes any existing `hub` directory and `images` files to ensure a clean environment.
 
 3. **Selecting Black Duck version**: You will be prompted to select a Black Duck version from a list of supported versions. The default version is `2024.7.0`.
 
 4. **Obtaining image names and versions**: The script clones the specified version of the Black Duck repository to obtain the necessary image names and versions.
 
 5. **Asking about 'extra' images required**:
-    - Whether you need BDBA containers (default: no).
+    - Whether you need Black Duck Binary Analysis (BDBA) containers (default: no).
     - Whether you need Reversing Labs containers (default: no).
-    - Whether you need UBI (hardened) images (default: no).  Please note: currently the script can't download the hardened Iron Bank images. I'm working on trying to fix that.
+    - Whether you need Iron Bank UBI (hardened) images (default: no).  Please note: currently, the script can't download the hardened Iron Bank images. I'm working on trying to fix that.
 
 6. **Authentication to Iron Bank registry**: If Iron Bank hardened UBI images are required, you will be prompted to enter your Iron Bank username and CLI secret to authenticate (you won't be able to see the CLI secret). The script then creates a 'docker-config.json' file that contains the username, CLI secret, and the base64 encoded username:cli secret. The script pulls the information it needs from here to successfully authenticate to the Iron Bank repository.  
 
